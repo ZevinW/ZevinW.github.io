@@ -7,7 +7,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://zevinw.github.io/images/SQLoptimization/back.png">
 <meta property="article:published_time" content="2024-07-01T01:44:49.000Z">
-<meta property="article:modified_time" content="2024-07-01T01:49:56.022Z">
+<meta property="article:modified_time" content="2024-07-01T02:51:07.778Z">
 <meta property="article:author" content="ZevinW">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://zevinw.github.io/images/SQLoptimization/back.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://zevinw.github.io/2024/07/01/SQL%E4%BC%98%E5%8C%96/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
@@ -55,7 +55,7 @@
   isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2024-07-01 09:49:56'
+  postUpdate: '2024-07-01 10:51:07'
 }</script><script>(win=>{
       win.saveToLocal = {
         set: (key, value, ttl) => {
@@ -152,7 +152,7 @@
         }
       }
       detectApple()
-    })(window)</script><meta name="generator" content="Hexo 7.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/back.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/SQLoptimization/back.png')"><nav id="nav"><span id="blog-info"><a href="/" title="ZevinW's Blog"><span class="site-name">ZevinW's Blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">SQL优化</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-07-01T01:44:49.000Z" title="发表于 2024-07-01 09:44:49">2024-07-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-07-01T01:49:56.022Z" title="更新于 2024-07-01 09:49:56">2024-07-01</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="SQL优化"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="1-优化方向"><a href="#1-优化方向" class="headerlink" title="1. 优化方向"></a>1. 优化方向</h2><h3 id="1-1-避免全表扫描-能有效提高查询速度"><a href="#1-1-避免全表扫描-能有效提高查询速度" class="headerlink" title="1.1 避免全表扫描, 能有效提高查询速度"></a>1.1 避免全表扫描, 能有效提高查询速度</h3><p>首先应考虑where 及 order by涉及的列建立索引</p>
+    })(window)</script><meta name="generator" content="Hexo 7.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/back.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/SQLoptimization/back.png')"><nav id="nav"><span id="blog-info"><a href="/" title="ZevinW's Blog"><span class="site-name">ZevinW's Blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">SQL优化</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-07-01T01:44:49.000Z" title="发表于 2024-07-01 09:44:49">2024-07-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-07-01T02:51:07.778Z" title="更新于 2024-07-01 10:51:07">2024-07-01</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="SQL优化"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="1-优化方向"><a href="#1-优化方向" class="headerlink" title="1. 优化方向"></a>1. 优化方向</h2><h3 id="1-1-避免全表扫描-能有效提高查询速度"><a href="#1-1-避免全表扫描-能有效提高查询速度" class="headerlink" title="1.1 避免全表扫描, 能有效提高查询速度"></a>1.1 避免全表扫描, 能有效提高查询速度</h3><p>首先应考虑where 及 order by涉及的列建立索引</p>
 <p>应尽量避免在where子句中对字段进行null值判断</p>
 <p>应尽量避免在 where 子句中使用 !&#x3D; 或 &lt;&gt; 操作符</p>
 <p>慎用 in 和 not in ,用 exists 代替 in ,对于连续的数值，可用 between and 替代</p>
@@ -177,26 +177,21 @@
 <p>聚集索引和非聚集索引的根本区别是表记录的排列顺序和与索引的排列顺序是否一致;</p>
 <p>聚集索引一个表只能有一个，而非聚集索引一个表可以存在多个</p>
 <h3 id="2-2-索引语法"><a href="#2-2-索引语法" class="headerlink" title="2.2 索引语法"></a>2.2 索引语法</h3><p>1.创建索引:</p>
-<p>   create [UNIQUE|FULLTEXT] index index_name on tbl_name (col_name [(length)] [ASC | DESC] , …);</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">   <span class="keyword">create</span> [<span class="keyword">UNIQUE</span><span class="operator">|</span>FULLTEXT] index index_name <span class="keyword">on</span> tbl_name (col_name [(length)] [<span class="keyword">ASC</span> <span class="operator">|</span> <span class="keyword">DESC</span>] , ...);</span><br></pre></td></tr></table></figure>
 <p>示例:</p>
-<p>CREATE INDEX paywayid_index ON pay_order_trade (paywayid)</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> INDEX paywayid_index <span class="keyword">ON</span> pay_order_trade (paywayid)</span><br></pre></td></tr></table></figure>
 <p>1</p>
-<p>alter table table_name ADD INDEX [index_name] (index_col_name,…)</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> table_name <span class="keyword">ADD</span> INDEX [index_name] (index_col_name,...)</span><br></pre></td></tr></table></figure>
 <p>1</p>
 <ol start="2">
-<li>组合索引:</li>
+<li>组合索引:<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">CREATE</span> INDEX idx_example <span class="keyword">ON</span> table1 (col1 <span class="keyword">ASC</span>, col2 <span class="keyword">DESC</span>, col3 <span class="keyword">ASC</span>)</span><br></pre></td></tr></table></figure>
+示例：<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> people <span class="keyword">ADD</span> INDEX lname_fname_age (lame,fname,age);</span><br></pre></td></tr></table></figure>
+1</li>
 </ol>
-<p>  CREATE INDEX idx_example ON table1 (col1 ASC, col2 DESC, col3 ASC)</p>
-<p>示例：</p>
-<p>ALTER TABLE people ADD INDEX lname_fname_age (lame,fname,age);</p>
-<p>1</p>
 <p>3.删除索引 :</p>
-<p>  DROP INDEX index_name ON tbl_name;</p>
-<p>  alter table table_name drop index index_name;</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">DROP</span> INDEX index_name <span class="keyword">ON</span> tbl_name;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">alter</span> <span class="keyword">table</span> table_name <span class="keyword">drop</span> index index_name;</span><br></pre></td></tr></table></figure>
 <p>4.查询索引 :</p>
-<p>  show index from table_name;</p>
-<p>  show keys from table_name;</p>
-<p>  desc table_Name;</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">show</span> index <span class="keyword">from</span> table_name;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">show</span> keys <span class="keyword">from</span> table_name;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">desc</span> table_Name;</span><br></pre></td></tr></table></figure>
 <h3 id="2-3-索引建立原则"><a href="#2-3-索引建立原则" class="headerlink" title="2.3 索引建立原则"></a>2.3 索引建立原则</h3><p>定义主键的数据列一定要建立索引</p>
 <p>定义有外键的数据列一定要建立索引</p>
 <p>对于经常查询的数据列最好建立索引</p>
@@ -216,14 +211,14 @@
 <h3 id="2-4-使用联合索引的好处"><a href="#2-4-使用联合索引的好处" class="headerlink" title="2.4 使用联合索引的好处?"></a>2.4 使用联合索引的好处?</h3><p>减少开销。建一个联合索引(col1,col2,col3)，实际相当于建了(col1),(col1,col2),(col1,col2,col3)三个索引</p>
 <p>效率高。索引列越多，通过索引筛选出的数据越少</p>
 <p>覆盖索引</p>
-<h2 id="3-查询优化工具-explain命令"><a href="#3-查询优化工具-explain命令" class="headerlink" title="3. 查询优化工具 - explain命令"></a>3. 查询优化工具 - explain命令</h2><p>   语法: explain select … from … [where …]</p>
+<h2 id="3-查询优化工具-explain命令"><a href="#3-查询优化工具-explain命令" class="headerlink" title="3. 查询优化工具 - explain命令"></a>3. 查询优化工具 - explain命令</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">   语法: explain <span class="keyword">select</span> … <span class="keyword">from</span> … [<span class="keyword">where</span> ...]</span><br></pre></td></tr></table></figure>
 <p>id：这是SELECT的查询序列号</p>
 <p>select_type：select_type就是select的类型</p>
 <p>table：显示这一行的数据是关于哪张表的</p>
 <p>type：这列最重要，显示了连接使用了哪种类别,有无使用索引，是使用Explain命令分析性能瓶颈的关键项之一。</p>
 <p>结果值从好到坏依次是：</p>
 <p>(保证查询至少达到range级别，最好能达到ref, 否则就可能会出现性能问题)</p>
-<p>system &gt; const &gt; eq_ref &gt; ref &gt; fulltext &gt; ref_or_null &gt; index_merge &gt; unique_subquery &gt; index_subquery &gt; range &gt; index &gt; ALL</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">system &gt; const &gt; eq_ref &gt; ref &gt; fulltext &gt; ref_or_null &gt; index_merge &gt; unique_subquery &gt; index_subquery &gt; range &gt; index &gt; ALL</span><br></pre></td></tr></table></figure>
 <p>1</p>
 <p>possible_keys：列指出MySQL能使用哪个索引在该表中找到行</p>
 <p>key：显示MySQL实际决定使用的键（索引）。如果没有选择索引，键是NULL</p>

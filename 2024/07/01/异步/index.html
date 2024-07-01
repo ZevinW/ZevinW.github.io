@@ -1,0 +1,199 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>异步 | ZevinW's Blog</title><meta name="author" content="ZevinW"><meta name="copyright" content="ZevinW"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="同步方法里调用异步场景：  构造函数里使用异步 实现异步接口 维护旧代码，避免异步污染  123static  async Task FooAsync()&#123;    await Task.Delay(1000);&#125;  阻塞(需要时刻关注死锁问题).Wait(),.Result()抛出的异常是 IAggregateException (异步的异常会聚合，实际的异常在其内部的 Inn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="异步">
+<meta property="og:url" content="https://zevinw.github.io/2024/07/01/%E5%BC%82%E6%AD%A5/index.html">
+<meta property="og:site_name" content="ZevinW&#39;s Blog">
+<meta property="og:description" content="同步方法里调用异步场景：  构造函数里使用异步 实现异步接口 维护旧代码，避免异步污染  123static  async Task FooAsync()&#123;    await Task.Delay(1000);&#125;  阻塞(需要时刻关注死锁问题).Wait(),.Result()抛出的异常是 IAggregateException (异步的异常会聚合，实际的异常在其内部的 Inn">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zevinw.github.io/images/asynchronous/back.png">
+<meta property="article:published_time" content="2024-07-01T01:33:38.000Z">
+<meta property="article:modified_time" content="2024-07-01T01:40:21.690Z">
+<meta property="article:author" content="ZevinW">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zevinw.github.io/images/asynchronous/back.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://zevinw.github.io/2024/07/01/%E5%BC%82%E6%AD%A5/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '异步',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-07-01 09:40:21'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/back.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/asynchronous/back.png')"><nav id="nav"><span id="blog-info"><a href="/" title="ZevinW's Blog"><span class="site-name">ZevinW's Blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">异步</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-07-01T01:33:38.000Z" title="发表于 2024-07-01 09:33:38">2024-07-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-07-01T01:40:21.690Z" title="更新于 2024-07-01 09:40:21">2024-07-01</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="异步"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="同步方法里调用异步"><a href="#同步方法里调用异步" class="headerlink" title="同步方法里调用异步"></a>同步方法里调用异步</h2><p>场景：</p>
+<ol>
+<li>构造函数里使用异步</li>
+<li>实现异步接口</li>
+<li>维护旧代码，避免异步污染</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">static  async Task FooAsync()&#123;</span><br><span class="line">    await Task.Delay(1000);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="阻塞-需要时刻关注死锁问题"><a href="#阻塞-需要时刻关注死锁问题" class="headerlink" title="阻塞(需要时刻关注死锁问题)"></a>阻塞(需要时刻关注死锁问题)</h3><h4 id="Wait-Result"><a href="#Wait-Result" class="headerlink" title=".Wait(),.Result()"></a><code>.Wait()</code>,<code>.Result()</code></h4><p>抛出的异常是 <code>IAggregateException</code> (异步的异常会聚合，实际的异常在其内部的 <code>InnerException</code></p>
+<p>)</p>
+<h4 id="GetAwaiter-GetResult-【非要阻塞的形式使用，建议用这个】"><a href="#GetAwaiter-GetResult-【非要阻塞的形式使用，建议用这个】" class="headerlink" title=".GetAwaiter().GetResult() 【非要阻塞的形式使用，建议用这个】"></a><code>.GetAwaiter().GetResult()</code> 【非要阻塞的形式使用，建议用这个】</h4><p>抛出的异常不是包装的 <code>IAggregateException</code> ，而直接时 <code>Exception</code></p>
+<h4 id="不阻塞的直接调用的问题"><a href="#不阻塞的直接调用的问题" class="headerlink" title="不阻塞的直接调用的问题"></a>不阻塞的直接调用的问题</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">static void Main(string[] arg)&#123;</span><br><span class="line">    try&#123;</span><br><span class="line">        _ = FooAsync(); // 弃元， 放弃返回值不被需要，避免编译器报错未等待</span><br><span class="line">        Console.WriteLine(&quot;Hello World!&quot;);</span><br><span class="line">        console.WriteLine(); // 避免不等待主线程直接结束， 让主线程继续读</span><br><span class="line">    &#125;catch(Exception e)&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">static  async Task FooAsync()&#123;()&#123;</span><br><span class="line">    await Task.Delay(1000);</span><br><span class="line">    throw new Exception(&quot;error!!&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">static async void VoidFooAsync()&#123;</span><br><span class="line">    await Task.Delay(1000);</span><br><span class="line">    Console.WriteLine(&quot;VoidFooAsync Done!&quot;);</span><br><span class="line">    GetRandomResult();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">static void GetRandomResult() =&gt; throw new NotImplementedException();</span><br></pre></td></tr></table></figure>
+
+<p>执行会发现无法捕捉到 异步方法 <code>FooAsync</code> 的异常，<strong>异常仿佛被吞噬了</strong>？</p>
+<p>如果是 <code>VoidFooAsync</code> ，则因为是void 没有返回值，连阻塞的方法 <code>.GetAwaiter().GetResult()</code>都无法使用，并且运行发现<strong>主线程会直接报错</strong>？</p>
+<h3 id="如何解决异常捕捉这个问题？"><a href="#如何解决异常捕捉这个问题？" class="headerlink" title="如何解决异常捕捉这个问题？"></a>如何解决异常捕捉这个问题？</h3><p>需要解决点：</p>
+<p>如何捕捉异步方法的异常</p>
+<p>不能阻塞</p>
+<p>不如监测异步方法已经执行完毕</p>
+<h4 id="Brian-Lagunas-方法："><a href="#Brian-Lagunas-方法：" class="headerlink" title="Brian Lagunas 方法："></a>Brian Lagunas 方法：</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">static void Main(string[] args)&#123;</span><br><span class="line">    try&#123;</span><br><span class="line">        var dataModel = new MyDataModel();</span><br><span class="line">        Console.WriteLine(&quot;Load Data ...&quot;);</span><br><span class="line">        Thread.Sleep(2000);</span><br><span class="line">        var data = dataModel.data;</span><br><span class="line">        Console.WriteLine($&quot;Data is loaded: &#123;dataModel.IsDataLoaded &#125;&quot;);</span><br><span class="line">    &#125;catch(Exception e)&#123;</span><br><span class="line">        Console.WriteLine(e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">static async void SafeFireAndForget(Task task , Action? onCompleted = null , Action&lt;Exception&gt;? onError = null)</span><br><span class="line">&#123;</span><br><span class="line">    try</span><br><span class="line">    &#123;</span><br><span class="line">        await task ;</span><br><span class="line">        onCompleted?.Invoke();</span><br><span class="line">    &#125;</span><br><span class="line">    catch (Exception e)</span><br><span class="line">    &#123;</span><br><span class="line">        onError?.Invoke(e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class MyDataModel&#123;</span><br><span class="line"></span><br><span class="line">    public List&lt;int&gt;? Data &#123;get; set;&#125;</span><br><span class="line"></span><br><span class="line">    public bool IsDataLoaded &#123;get ; set;&#125; =&gt; false;</span><br><span class="line"></span><br><span class="line">    public MyDataModel()&#123;</span><br><span class="line">        SafeFireAndForget(LoadDataAsync(), () =&gt; IsDataLoaded == true , e =&gt; throw e)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">async Task LoadDataAsync()&#123;</span><br><span class="line">    await Task.Delay(1000);</span><br><span class="line">    throw new Exception(&quot;Failed to Load Data !&quot;)</span><br><span class="line">    Data = Enumerable.Range(1, 10).ToList();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>简单说就是 让 <code>VoidFooAsync</code> 的异常不直接抛出（主线程直接挂掉），而是用了一个回调去调异常</p>
+<h4 id="SingletonSean-方法"><a href="#SingletonSean-方法" class="headerlink" title="SingletonSean 方法"></a>SingletonSean 方法</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">static void Main(string[] args)&#123;</span><br><span class="line">    try&#123;</span><br><span class="line">        var dataModel = new MyDataModel();</span><br><span class="line">        Console.WriteLine(&quot;Load Data ...&quot;);</span><br><span class="line">        Thread.Sleep(2000);</span><br><span class="line">        var data = dataModel.data;</span><br><span class="line">        Console.WriteLine($&quot;Data is loaded: &#123;dataModel.IsDataLoaded &#125;&quot;);</span><br><span class="line">    &#125;catch(Exception e)&#123;</span><br><span class="line">        Console.WriteLine(e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class MyDataModel&#123;</span><br><span class="line"></span><br><span class="line">    public List&lt;int&gt;? Data &#123;get; set;&#125;</span><br><span class="line"></span><br><span class="line">    public bool IsDataLoaded &#123;get ; set;&#125; =&gt; false;</span><br><span class="line"></span><br><span class="line">    public MyDataModel()&#123;</span><br><span class="line">        LoadDataAsync().ContinueWith(OnDataLoaded)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 委托</span><br><span class="line">private bool OnDataLoaded(Task t)&#123;</span><br><span class="line">    if (t.IsFaulted) &#123;</span><br><span class="line">        Console.WriteLine(t.Exception?.InnerException?.Message);</span><br><span class="line">    &#125;</span><br><span class="line">    return IsDataLoaded = true ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">async Task LoadDataAsync()&#123;</span><br><span class="line">    await Task.Delay(1000);</span><br><span class="line">    throw new Exception(&quot;Failed to Load Data !&quot;)</span><br><span class="line">    Data = Enumerable.Range(1, 10).ToList();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>简单说就是 让 <code>FooAsync</code> 的异常不直接抛出（主线程无法捕捉），而是用了一个回调去调异常</p>
+<p>存在的问题， <code>ContinueWith</code>造成新Task <code>OnDataLoaded</code> 的开销，且<code>ContinueWith</code>的 <code>TaskScheduder</code></p>
+<p>的默认值不是 <code>.Defult</code>,可能会造成死锁问题</p>
+<h4 id="Nick-Chapsas-方法"><a href="#Nick-Chapsas-方法" class="headerlink" title="Nick Chapsas 方法"></a>Nick Chapsas 方法</h4><p>task 工厂模式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class MyService()&#123;</span><br><span class="line">    // 设为私有，外部不可访问</span><br><span class="line">    private MyService()&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    async Task InitAsync()&#123;</span><br><span class="line">        await Task.Delay(1000);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static async Task&lt;MyService&gt; CreateAsync()&#123;</span><br><span class="line">        var service = new MyService();</span><br><span class="line">        await service.InitAsync();</span><br><span class="line">        return service;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="存在问题："><a href="#存在问题：" class="headerlink" title="存在问题："></a>存在问题：</h3><p>无法注册给一个IOC 容器， 无法做一个单例，并如何做单元测试？</p>
+<h2 id="ValueTask"><a href="#ValueTask" class="headerlink" title="ValueTask"></a>ValueTask</h2><h3 id="ValueTask-1"><a href="#ValueTask-1" class="headerlink" title="ValueTask"></a>ValueTask</h3><ol>
+<li><p>值类型（分配到栈上）性能提升</p>
+</li>
+<li><p>主要运用</p>
+</li>
+<li><p>返回值是 Value 或者 Task 的返回值类型上，且 Value 返回的情型更多是Task</p>
+</li>
+<li><p>只有应用于在一个线程上被等待，无法应用于多线程</p>
+</li>
+<li><p>不要用阻塞的方式使用 <code>.Result</code>, <code>.GetAwaiter().GetResult()</code>,无法保证正常阻塞，除非先判断 <code>IsCompleted == true</code>, 或者先用 <code>.AsTask()</code>转为 <code>Task</code></p>
+</li>
+</ol>
+<h3 id="Task"><a href="#Task" class="headerlink" title="Task"></a>Task</h3><p>引用类型（分配到堆上）</p>
+<h2 id="异步编程监测进度"><a href="#异步编程监测进度" class="headerlink" title="异步编程监测进度"></a>异步编程监测进度</h2></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://zevinw.github.io">ZevinW</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://zevinw.github.io/2024/07/01/%E5%BC%82%E6%AD%A5/">https://zevinw.github.io/2024/07/01/%E5%BC%82%E6%AD%A5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://zevinw.github.io" target="_blank">ZevinW's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/images/asynchronous/back.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/05/16/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8/" title="线程安全"><img class="cover" src="/images/TaskSafe/back.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">线程安全</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/back.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">ZevinW</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8C%E6%AD%A5%E6%96%B9%E6%B3%95%E9%87%8C%E8%B0%83%E7%94%A8%E5%BC%82%E6%AD%A5"><span class="toc-number">1.</span> <span class="toc-text">同步方法里调用异步</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%BB%E5%A1%9E-%E9%9C%80%E8%A6%81%E6%97%B6%E5%88%BB%E5%85%B3%E6%B3%A8%E6%AD%BB%E9%94%81%E9%97%AE%E9%A2%98"><span class="toc-number">1.1.</span> <span class="toc-text">阻塞(需要时刻关注死锁问题)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Wait-Result"><span class="toc-number">1.1.1.</span> <span class="toc-text">.Wait(),.Result()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#GetAwaiter-GetResult-%E3%80%90%E9%9D%9E%E8%A6%81%E9%98%BB%E5%A1%9E%E7%9A%84%E5%BD%A2%E5%BC%8F%E4%BD%BF%E7%94%A8%EF%BC%8C%E5%BB%BA%E8%AE%AE%E7%94%A8%E8%BF%99%E4%B8%AA%E3%80%91"><span class="toc-number">1.1.2.</span> <span class="toc-text">.GetAwaiter().GetResult() 【非要阻塞的形式使用，建议用这个】</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8D%E9%98%BB%E5%A1%9E%E7%9A%84%E7%9B%B4%E6%8E%A5%E8%B0%83%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">1.1.3.</span> <span class="toc-text">不阻塞的直接调用的问题</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%BC%82%E5%B8%B8%E6%8D%95%E6%8D%89%E8%BF%99%E4%B8%AA%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">如何解决异常捕捉这个问题？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Brian-Lagunas-%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="toc-number">1.2.1.</span> <span class="toc-text">Brian Lagunas 方法：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SingletonSean-%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.2.</span> <span class="toc-text">SingletonSean 方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Nick-Chapsas-%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.3.</span> <span class="toc-text">Nick Chapsas 方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%98%E5%9C%A8%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="toc-number">1.3.</span> <span class="toc-text">存在问题：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ValueTask"><span class="toc-number">2.</span> <span class="toc-text">ValueTask</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ValueTask-1"><span class="toc-number">2.1.</span> <span class="toc-text">ValueTask</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task"><span class="toc-number">2.2.</span> <span class="toc-text">Task</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B%E7%9B%91%E6%B5%8B%E8%BF%9B%E5%BA%A6"><span class="toc-number">3.</span> <span class="toc-text">异步编程监测进度</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/07/01/%E5%BC%82%E6%AD%A5/" title="异步"><img src="/images/asynchronous/back.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="异步"/></a><div class="content"><a class="title" href="/2024/07/01/%E5%BC%82%E6%AD%A5/" title="异步">异步</a><time datetime="2024-07-01T01:33:38.000Z" title="发表于 2024-07-01 09:33:38">2024-07-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/05/16/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8/" title="线程安全"><img src="/images/TaskSafe/back.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="线程安全"/></a><div class="content"><a class="title" href="/2024/05/16/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8/" title="线程安全">线程安全</a><time datetime="2024-05-16T11:36:21.000Z" title="发表于 2024-05-16 19:36:21">2024-05-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/05/16/%E4%B8%AD%E9%97%B4%E4%BB%B6/" title="中间件"><img src="/images/middleware/back.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="中间件"/></a><div class="content"><a class="title" href="/2024/05/16/%E4%B8%AD%E9%97%B4%E4%BB%B6/" title="中间件">中间件</a><time datetime="2024-05-16T06:38:14.000Z" title="发表于 2024-05-16 14:38:14">2024-05-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/05/16/hello-world/" title="Hello World"><img src="/images/hello-world/back.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello World"/></a><div class="content"><a class="title" href="/2024/05/16/hello-world/" title="Hello World">Hello World</a><time datetime="2024-05-16T04:38:14.000Z" title="发表于 2024-05-16 12:38:14">2024-05-16</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By ZevinW</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat-btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>
